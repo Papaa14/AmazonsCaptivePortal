@@ -31,11 +31,11 @@ class AppServiceProvider extends ServiceProvider
    */
   public function boot(): void
   {
-    if (request()->getHost() === 'app.ekinpay.com') {
-      URL::forceScheme('https'); 
-    } elseif (request()->getHost() === 'captive.ekinpay.com') {
+    if (request()->getHost() === 'dev.amazonnetworks.co.ke') {
+      URL::forceScheme('https');
+    } elseif (request()->getHost() === 'captive.amazonnetworks.co.ke') {
         URL::forceScheme('http');
-    } elseif (request()->getHost() === 'redirect.ekinpay.com') {
+    } elseif (request()->getHost() === 'redirect.amazonnetworks.co.ke') {
       URL::forceScheme('http');
     }
     Paginator::defaultView('vendor.pagination.rounded');

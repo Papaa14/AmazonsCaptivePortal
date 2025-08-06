@@ -28,6 +28,7 @@ use App\Http\Controllers\CaptivePortalController;
 use App\Http\Controllers\MpesaController;
 use App\Http\Controllers\ServerMetricsController;
 use App\Http\Controllers\TicketController;
+use App\Http\Controllers\PortalController;
 // use Laravel\Horizon\Horizon;
 
 require __DIR__ . '/auth.php';
@@ -35,6 +36,17 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
+//Amazons captive portal routes
+Route::get('/offers', [PortalController::class, 'showOffers'])->name('portal.offers');
+Route::post('/offers/buy', [PortalController::class, 'buyOffer'])->name('portal.offers.buy');
+Route::post('/offers/voucher', [PortalController::class, 'useVoucher'])->name('portal.offers.voucher');
+Route::get('/connected', [PortalController::class, 'showConnected'])->name('portal.connected');
+
+Route::domain('captive.amazonsnetwork.com')->group(function () {
+
+
+   
+});
 
 Route::domain('captive.ekinpay.com')->group(function () {
     Route::middleware([])->get('/hs/ping', fn () => 'pong');

@@ -1,2 +1,207 @@
 /*resources/css/app.css*/
-@import './../../vendor/power-components/livewire-powergrid/dist/bootstrap5.css'
+@import './../../vendor/power-components/livewire-powergrid/dist/bootstrap5.css';
+/* style.css */
+
+/* --- Google Font --- */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+/* --- CSS Variables --- */
+:root {
+    --primary-color: #0d6efd; /* A modern blue */
+    --primary-color-dark: #0a58ca;
+    --danger-color: #dc3545;
+    --success-color: #198754;
+    --light-bg: #f8f9fa;
+    --card-bg: #ffffff;
+    --text-color: #212529;
+    --text-muted: #6c757d;
+    --border-color: #dee2e6;
+    --shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+    --border-radius: 0.5rem;
+}
+
+/* --- Base & Reset --- */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--light-bg);
+    color: var(--text-color);
+    overflow-x: hidden;
+}
+
+/* --- Main Container & Card Styling --- */
+.main-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 1rem;
+}
+
+.auth-card, .portal-card {
+    background-color: var(--card-bg);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    padding: 2rem;
+    width: 100%;
+    max-width: 450px;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+.portal-card {
+    max-width: 900px;
+}
+
+.logo-container {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.logo-container img {
+    max-width: 250px;
+    height: auto;
+}
+
+.logo-container .tagline {
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+}
+
+/* --- Forms & Buttons --- */
+.form-control {
+    border-radius: var(--border-radius);
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border-color);
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-color-dark);
+    border-color: var(--primary-color-dark);
+}
+
+.btn-block {
+    width: 100%;
+}
+
+.btn-outline-danger {
+    color: var(--danger-color);
+    border-color: var(--danger-color);
+}
+
+.btn-outline-danger:hover {
+    background-color: var(--danger-color);
+    color: white;
+}
+
+.btn-success.btn-sm {
+    border-radius: 20px;
+}
+
+
+/* --- Page Specific: OTP --- */
+#otp-input {
+    letter-spacing: 15px;
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+    max-width: 220px;
+    margin: 0 auto;
+}
+
+#countdown-container {
+    text-align: center;
+    margin-top: 1.5rem;
+}
+
+#resendCodeBtn {
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    cursor: pointer;
+    font-weight: 500;
+}
+
+/* --- Page Specific: Offers --- */
+.offers-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.balance-box {
+    text-align: center;
+    padding: 1rem;
+}
+
+#refreshBtn {
+    cursor: pointer;
+    transition: transform 0.5s ease;
+}
+
+#refreshBtn.rotating {
+    transform: rotate(360deg);
+}
+
+.plan-card {
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    margin-bottom: 1rem;
+    cursor: pointer;
+    transition: box-shadow 0.2s ease;
+}
+
+.plan-card:hover {
+    box-shadow: 0 0.25rem 0.5rem rgba(0,0,0,0.1);
+}
+
+.plan-card .btn {
+    border-radius: 20px;
+    padding: .25rem 1rem;
+}
+
+#activeSubscriptionsBox .card {
+    background-color: #e9f5ff;
+}
+
+
+/* --- Page Specific: Connected --- */
+.connected-container {
+    text-align: center;
+}
+
+.connected-container img {
+    max-width: 200px;
+    margin-bottom: 2rem;
+}
+
+.connected-container h1 {
+    color: var(--success-color);
+    font-weight: 700;
+}
+
+/* --- Footer --- */
+.footer-text {
+    text-align: center;
+    color: var(--text-muted);
+    margin-top: 2rem;
+    font-size: 0.9rem;
+}

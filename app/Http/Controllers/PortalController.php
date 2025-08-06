@@ -25,18 +25,18 @@ class PortalController extends Controller
     ];
 
     private $mock_user = [
-        'name' => 'Linus',
-        'phone' => '0712345678',
-        'credit' => 79,
+        'name' => ' ',
+        'phone' => ' ',
+        'credit' => 0.0,
         'points' => 0,
     ];
 
     public function showOffers()
     {
         $sliderImages = [
-            asset('assets/slider/1.jpg'),
-            asset('assets/slider/2.jpg'),
-            asset('assets/slider/3.jpg'),
+            asset('assets/amazons/assets/slider/1.jpg'),
+            asset('assets/amazons/assets/slider/2.jpg'),
+            asset('assets/amazons/assets/slider/3.jpg'),
         ];
         
         return view('amazons.portal.offers', [

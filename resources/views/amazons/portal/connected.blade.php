@@ -28,7 +28,7 @@
 <script>
     // Redirect back to offers page after a few seconds
     setTimeout(() => {
-        window.location.href = '{{ route("amazons.portal.offers") }}';
+         window.location.href = '{{route("portal.offers") }}';
     }, 8000);
 </script>
 @endpush

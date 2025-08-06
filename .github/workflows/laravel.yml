@@ -1,0 +1,63 @@
+# name: test and deploy EkinPay
+
+# on:
+#   push:
+#     branches: [main]
+# jobs:
+#   deploy:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: shivammathur/setup-php@v2
+#         with:
+#           php-version: "8.4"
+#       - uses: actions/checkout@v4
+#       - uses: actions/setup-node@v4
+#         with:
+#           node-version: 22
+#       - uses: mirromutth/mysql-action@v1.1
+#         with:
+#           mysql database: testing
+#           mysql user: testing_user
+#           mysql password: super_secret
+#       - name: setup environment variables
+#         run: |
+#           cp .env.example .env
+#           echo "APP_ENV=testing" >> .env
+#           echo "DB_CONNECTION=mysql" >> .env
+#           echo "DB_USERNAME=testing_user" >> .env
+#           echo "DB_PASSWORD=super_secret" >> .env
+#           echo "DB_DATABASE=testing" >> .env
+#       - name: Install composer Dependencies
+#         run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+#       - name: Install node dependencies
+#         run: npm ci
+#       - name: build npm and generate key
+#         run: |
+#           php artisan key:generate
+#           npm run build
+#       - name: Directory Permissions
+#         run: chmod 755 -R storage bootstrap/cache
+#       - name: Run Unit tests
+#         run: php artisan test
+#       - name: Deploy to Server
+#         if: ${{ success() }}
+#         uses: appleboy/ssh-action@v1.0.0
+#         with:
+#             host: ${{ secrets.SSH_HOST }}
+#             username: ${{ secrets.SSH_USER }}
+#             key: ${{ secrets.SSH_KEY }}
+#             script_stop: true
+#             script: |
+#               cd /var/www/html/app
+#               php artisan down
+#               git pull
+#               npm ci
+#               npm run build
+#               composer i --no-interaction -q --no-progress
+#               php artisan migrate --no-interaction
+#               php artisan optimize
+#               php artisan up
+
+#               chown -R www-data:www-data .
+#               find storage bootstrap/cache -type d -exec chmod 775 {} \;
+#               find storage bootstrap/cache -type f -exec chmod 664 {} \;

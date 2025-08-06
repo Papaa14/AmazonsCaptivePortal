@@ -1,0 +1,8 @@
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = true
+[remote "origin"]
+	url = git@github.com:Linkina70/Ekinpay.git
+	fetch = +refs/*:refs/*
+	mirror = true

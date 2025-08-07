@@ -65,10 +65,13 @@ class CaptiveController extends Controller
             'expires_at' => Carbon::now()->addMinutes(2),
         ]);
 
+          $redirectUrl = 'https://captive.amazonnetworks.co.ke/otp.html';
+
         if ($this->otpService->sendOtp($phoneNumber, $otp)) {
-            return response()->json(['message' => 'OTP sent successfully.']);
+            return response()->json(['message' => 'OTP sent successfully.', 'redirect_url' => $redirectUrl,]);
         }
 
+          
         return response()->json(['error' => 'Failed to send OTP.'], 500);
     }
 

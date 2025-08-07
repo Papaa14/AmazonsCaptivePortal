@@ -14,7 +14,7 @@ use Carbon\Carbon;
 
 class PaymentController extends Controller
 {
-   
+
     // {
     //     Log::info('STK Callback Received:', $request->all());
 
@@ -33,7 +33,7 @@ class PaymentController extends Controller
     //         // Let's pretend we look it up and find the user and package.
     //         // For now, we will have to assume the callback includes enough info or we log it.
     //         // Let's assume we retrieve `$user` and `$package` based on the `$checkoutRequestID`.
-            
+
     //         // This is a placeholder! You MUST implement a lookup system.
     //         // For example: $pending = PendingTransaction::where('checkout_id', $checkoutRequestID)->first();
     //         // $user = User::find($pending->user_id);
@@ -77,55 +77,54 @@ class PaymentController extends Controller
     //     ]);
     // }
 
-     /**
+    /**
      * Handles the C2B confirmation callback from M-Pesa.
      * This is where we capture the user's name and credit their account.
      */
-public function handleC2bConfirmation(Request $request)
-{
-    Log::info('C2B Confirmation Received:', $request->all());
+    public function handleC2bConfirmation(Request $request)
+    {
+        Log::info('C2B Confirmation Received:', $request->all());
 
-    try {
-        // Extract data from the M-Pesa callback
-        $transactionAmount = $request->input('TransAmount');
-        $phoneNumber = '254' . substr($request->input('MSISDN'), -9); // Normalize
+        try {
+            // Extract data from the M-Pesa callback
+            $transactionAmount = $request->input('TransAmount');
+            $phoneNumber = '254' . substr($request->input('MSISDN'), -9); // Normalize
 
-        // Get the name 
-        $firstName = $request->input('FirstName');
-       
+            // Get the name 
+            $firstName = $request->input('FirstName');
 
-        // Use a database transaction to ensure data integrity
-        DB::transaction(function () use ($phoneNumber, $firstName, $transactionAmount) {
 
-            // Find the user by phone number or create them if they don't exist.
-            $user = User::firstOrCreate(
-                ['phone_number' => $phoneNumber]
-            );
+            // Use a database transaction to ensure data integrity
+            DB::transaction(function () use ($phoneNumber, $firstName, $transactionAmount) {
 
-            
-            // We now update the user in a separate, secure step.
-            // This prevents overwriting an existing name and uses parameter binding         
-            $user->name = $user->name ?? $firstName;
-            $user->credit_points += $transactionAmount;
-            $user->save();
+                // Find the user by phone number or create them if they don't exist.
+                $user = User::firstOrCreate(
+                    ['phone_number' => $phoneNumber]
+                );
 
-            Log::info("C2B: Credited {$transactionAmount} to user {$user->id} ({$firstName}).");
-        });
 
-    } catch (\Exception $e) {
-        Log::error('C2B Confirmation Processing Error: ' . $e->getMessage(), [
-            'trace' => $e->getTraceAsString()
+                // We now update the user in a separate, secure step.
+                // This prevents overwriting an existing name and uses parameter binding         
+                $user->name = $user->name ?? $firstName;
+                $user->credit_points += $transactionAmount;
+                $user->save();
+
+                Log::info("C2B: Credited {$transactionAmount} to user {$user->id} ({$firstName}).");
+            });
+        } catch (\Exception $e) {
+            Log::error('C2B Confirmation Processing Error: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString()
+            ]);
+            // Inform Safaricom that an error occurred on our end.
+            return response()->json(['ResultCode' => 1, 'ResultDesc' => 'An internal server error occurred.']);
+        }
+
+        // Acknowledge receipt to Safaricom
+        return response()->json([
+            'ResultCode' => 0,
+            'ResultDesc' => 'The service was accepted successfully',
         ]);
-        // Inform Safaricom that an error occurred on our end.
-        return response()->json(['ResultCode' => 1, 'ResultDesc' => 'An internal server error occurred.']);
     }
-
-    // Acknowledge receipt to Safaricom
-    return response()->json([
-        'ResultCode' => 0,
-        'ResultDesc' => 'The service was accepted successfully',
-    ]);
-}
 
     /**
      * Handles the C2B validation request from M-Pesa.
@@ -141,60 +140,7 @@ public function handleC2bConfirmation(Request $request)
             'ResultDesc' => 'Accepted',
         ]);
     }
-    /**
-     * Handles the callback from the aggregator.
-     */
-    // public function handleAggregatorCallback(Request $request)
-    // {
-    //     $data = $request->all();
-    //     Log::info('Aggregator Callback Received:', $data);
 
-    //     $internalRef = $request->query('ref'); // Get our ref from the URL
-    //     if (!$internalRef) {
-    //         Log::error('Callback received without an internal reference.');
-    //         return response()->json(['message' => 'Invalid callback'], 400);
-    //     }
-
-    //     // Find the pending payment using our reference
-    //     $pendingPayment = DB::table('pending_payments')->where('internal_ref', $internalRef)->first();
-    //     if (!$pendingPayment) {
-    //         Log::error('Callback for an unknown transaction received.', ['ref' => $internalRef]);
-    //         return response()->json(['message' => 'Unknown transaction'], 404);
-    //     }
-
-    //     // Check the transaction status from the callback body
-    //     if ($data['status'] === 'Success') {
-    //         DB::transaction(function () use ($pendingPayment) {
-    //             // 1. Check if already completed to prevent double processing
-    //             if (DB::table('pending_payments')->find($pendingPayment->id)->status === 'completed') {
-    //                 return;
-    //             }
-
-    //             // 2. Get package details
-    //             $package = HotspotPackage::find($pendingPayment->hotspot_package_id);
-
-    //             // 3. Create the active subscription and voucher
-    //             $voucherCode = Str::upper(Str::random(8));
-    //             Subscription::create([
-    //                 'user_id' => $pendingPayment->user_id,
-    //                 'hotspot_package_id' => $package->id,
-    //                 'voucher_code' => $voucherCode,
-    //                 'activated_at' => now(),
-    //                 'expires_at' => now()->addMinutes($package->duration_minutes),
-    //             ]);
-
-    //             // 4. Mark the payment as completed
-    //             DB::table('pending_payments')->where('id', $pendingPayment->id)->update(['status' => 'completed']);
-    //             Log::info('Subscription successfully created for payment.', ['id' => $pendingPayment->id]);
-    //         });
-    //     } else {
-    //         // Payment failed or was cancelled
-    //         DB::table('pending_payments')->where('id', $pendingPayment->id)->update(['status' => 'failed']);
-    //         Log::warning('Payment failed for transaction.', ['id' => $pendingPayment->id, 'reason' => $data['result_desc']]);
-    //     }
-
-    //     return response()->json(['message' => 'Callback processed']);
-    // }
 
     /**
      * Allows the frontend to poll for the status of a payment.
@@ -205,19 +151,45 @@ public function handleC2bConfirmation(Request $request)
             return response()->json(['status' => 'error', 'message' => 'Payment reference is required'], 400);
         }
 
+        // Find the pending payment by its reference (CheckoutRequestID)
         $transaction = DB::table('pending_payments')->where('payment_reference', $paymentReference)->first();
 
         if (!$transaction) {
             return response()->json(['status' => 'pending', 'message' => 'Transaction not found.'], 404);
         }
+        // Check if  the payment is complete. Now, find the subscription that was created from it.
+        // We match by user_id and ensure it was created after the payment attempt.
 
+        if ($transaction->status === 'completed') {
+
+
+            $subscription = Subscription::where('user_id', $transaction->user_id)
+                ->where('hotspot_package_id', $transaction->hotspot_package_id)
+                ->where('created_at', '>=', $transaction->updated_at) // Match subscription created after payment was marked complete
+                ->latest() // Get the most recent one in case of duplicates
+                ->first();
+
+            if (!$subscription) {
+                // This is a rare edge case where the callback has finished but the subscription wasn't found.
+                // It's safest to tell the frontend to keep waiting for a moment.
+                return response()->json(['status' => 'pending', 'message' => 'Finalizing subscription...']);
+            }
+
+            // Success! Return the completed status AND the voucher code.
+            return response()->json([
+                'status' => 'completed',
+                'message' => 'Payment successful. Subscription is active.',
+                'voucher_code' => $subscription->voucher_code, // <-- The key piece of information
+            ]);
+        }
+
+        // For any other status ('pending', 'failed'), return the status as before.
         return response()->json([
-            'status' => $transaction->status, // will be 'pending', 'completed', or 'failed'
+            'status' => $transaction->status,
             'message' => "The transaction status is {$transaction->status}.",
         ]);
     }
-
-     public function handleSafaricomCallback(Request $request)
+    public function handleSafaricomCallback(Request $request)
     {
         // 1. Log the entire incoming request for debugging purposes.
         Log::info('Safaricom Callback Received:', $request->all());
@@ -231,7 +203,7 @@ public function handleC2bConfirmation(Request $request)
             // Respond with an error but don't crash.
             return response()->json(['ResultCode' => 1, 'ResultDesc' => 'Invalid callback format']);
         }
-        
+
         $checkoutRequestID = $callbackData['CheckoutRequestID'];
         $resultCode = $callbackData['ResultCode'];
 
@@ -249,7 +221,7 @@ public function handleC2bConfirmation(Request $request)
                     // Stop processing if we don't know this transaction.
                     return;
                 }
-                
+
                 // 5. Check for Idempotency: Has this transaction already been completed?
                 if ($pendingPayment->status === 'completed') {
                     Log::info('Duplicate callback received for an already completed transaction.', ['id' => $checkoutRequestID]);
@@ -283,7 +255,6 @@ public function handleC2bConfirmation(Request $request)
                     // 10. Mark the payment as completed in your database.
                     DB::table('pending_payments')->where('id', $pendingPayment->id)->update(['status' => 'completed']);
                     Log::info('Subscription created successfully.', ['CheckoutRequestID' => $checkoutRequestID, 'voucher' => $voucherCode]);
-
                 } else {
                     // --- PAYMENT FAILED OR WAS CANCELLED BY THE USER ---
                     DB::table('pending_payments')->where('id', $pendingPayment->id)->update(['status' => 'failed']);
@@ -294,7 +265,6 @@ public function handleC2bConfirmation(Request $request)
                     ]);
                 }
             });
-
         } catch (\Exception $e) {
             // If anything goes wrong inside the transaction, log the detailed error.
             Log::error('Error processing Safaricom callback: ' . $e->getMessage(), [
@@ -304,7 +274,7 @@ public function handleC2bConfirmation(Request $request)
             // Return an error response to Safaricom
             return response()->json(['ResultCode' => 1, 'ResultDesc' => 'An internal server error occurred.']);
         }
-        
+
         // 11. Finally, send a success acknowledgement response back to Safaricom.
         return response()->json([
             'ResultCode' => 0,

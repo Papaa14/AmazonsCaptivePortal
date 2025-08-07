@@ -60,6 +60,6 @@ Route::post('/c2b/confirmation', [PaymentController::class, 'handleC2bConfirmati
 // Route for the aggregator callback
 Route::post('/payment/callback', [PaymentController::class, 'handleSafaricomCallback']);
 // Route for the frontend to check the status
-Route::get('/payment/status/{paymentReference}', [PaymentController::class, 'checkPaymentStatus']);
+Route::get('/payment-status/{paymentReference}', [PaymentController::class, 'checkPaymentStatus']);
 
 });

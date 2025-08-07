@@ -38,8 +38,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
 
 //amazons captive portal routes
-Route::prefix('hotspot')->group(function () {
-   
+Route::domain('captive.amazonnetworks.co.ke')->prefix('hotspot')->group(function () {
+
 //amazons captive portal routes
 Route::post('/request-otp', [CaptiveController::class, 'getUserInfo']);
 Route::post('/verify-otp', [CaptiveController::class, 'verifyDetails']);

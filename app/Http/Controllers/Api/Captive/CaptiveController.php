@@ -329,9 +329,12 @@ class CaptiveController extends Controller
         // 5. Grant access to the new device
         $subscription->activeSessions()->create(['mac_address' => $macAddress]);
 
+          $redirectUrl = 'https://captive.amazonnetworks.co.ke/connected.html';
+
         // Here you would grant internet access via your router's API
         return response()->json([
             'message' => 'New device connected successfully.',
+            'redirect_url'=>$redirectUrl,
             'devices_used' => $activeMacs->count() + 1,
             'device_limit' => $deviceLimit
         ], 200);

@@ -65,7 +65,7 @@ return [
   |
   */
 
-  'timezone' => env('APP_TIMEZONE', 'UTC'),
+  'timezone' => 'Africa/Nairobi', // Set to your preferred timezone, e.g., 'UTC', 'America/New_York', etc.
 
   /*
   |--------------------------------------------------------------------------

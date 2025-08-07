@@ -30,9 +30,9 @@
 <div class="container py-3">
     {{-- This div holds all the data passed from the controller for JS to access --}}
     <div id="page-data"
-         data-user-credit="{{ $user['credit'] }}"
+         {{-- data-user-credit="{{ $user['credit'] }}"
          data-user-phone="{{ $user['phone'] }}"
-         data-plans='@json($plans)'
+         data-plans='@json($plans)' --}}
          data-buy-url="{{ route('portal.offers.buy') }}"
          data-voucher-url="{{ route('portal.offers.voucher') }}">
     </div>
@@ -43,15 +43,15 @@
 
     <div class="portal-card mx-auto p-0">
         <div class="p-3">
-            <p class="lead mb-0">Welcome back, <span id="userName">{{ $user['name'] }}</span> 👋</p>
+            <p class="lead mb-0">Welcome back, <span id="userName"></span> 👋</p>
         </div>
 
         <div class="balance-section">
-            <div> Credit(Ksh)<br> <strong id="creditBalanceText" class="fs-4 text-success">{{ $user['credit'] }}</strong></div>
+            <div> Credit(Ksh)<br> <strong id="creditBalanceText" class="fs-4 text-success"></strong></div>
             <div id="refreshBtn" title="Refresh">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/><path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/></svg>
             </div>
-            <div> Net Points<br> <strong class="fs-4">{{ $user['points'] }}</strong></div>
+            <div> Net Points<br> <strong class="fs-4"></strong></div>
         </div>
 
         <div class="row g-0">

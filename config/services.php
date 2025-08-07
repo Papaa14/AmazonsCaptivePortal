@@ -31,4 +31,21 @@ return [
     ],
   ],
 
+  'aggregator' => [
+    'base_url' => env('AGGREGATOR_BASE_URL'),
+    'key' => env('AGGREGATOR_API_KEY'),
+    'secret' => env('AGGREGATOR_API_SECRET'),
+    'party_b' => env('AGGREGATOR_PARTY_B'),
+    'callback_url' => env('AGGREGATOR_CALLBACK_URL'),
+],
+
+'safaricom' => [
+    'env' => env('SAFARICOM_ENV', 'sandbox'),
+    'key' => env('SAFARICOM_KEY'),
+    'secret' => env('SAFARICOM_SECRET'),
+    'shortcode' => env('SAFARICOM_SHORTCODE'),
+    'passkey' => env('SAFARICOM_PASSKEY'),
+    'callback_url' => env('SAFARICOM_CALLBACK_URL'),
+    'transaction_type' => env('SAFARICOM_TRANSACTION_TYPE', 'CustomerPayBillOnline'),
+],
 ];

@@ -41,8 +41,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 Route::prefix('hotspot')->group(function () {
    
 //amazons captive portal routes
-Route::post('/get-user-info', [CaptiveController::class, 'getUserInfo']);
-Route::post('/verify-details', [CaptiveController::class, 'verifyDetails']);
+Route::post('/request-otp', [CaptiveController::class, 'getUserInfo']);
+Route::post('/verify-otp', [CaptiveController::class, 'verifyDetails']);
 Route::get('/client-details', [CaptiveController::class, 'getClientDetails']);
 
 //packages routes 

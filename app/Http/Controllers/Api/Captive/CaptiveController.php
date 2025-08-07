@@ -233,6 +233,7 @@ class CaptiveController extends Controller
         $validator = Validator::make($request->all(), [
             'phone_number' => ['required', 'string', 'regex:/^(254\d{9}|0[17]\d{8})$/'],
             'package_id' => 'required|integer|exists:hotspot_packages,id',
+            'mac_address' => 'required|string|regex:/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/',
         ]);
 
         if ($validator->fails()) {
@@ -271,9 +272,8 @@ class CaptiveController extends Controller
         DB::table('pending_payments')->where('id', $pendingPaymentId)->update(['payment_reference' => $checkoutRequestID]);
 
         return response()->json([
-            'message' => 'STK Push sent successfully. Please enter your M-Pesa PIN.',
-            // It's good practice to send the CheckoutRequestID to the frontend
-            'checkout_request_id' => $checkoutRequestID,
+            'message' => 'STK Push sent successfully. Please enter your M-Pesa PIN.',           
+            'confirmation_code' => $checkoutRequestID,
         ], 201);
     }
     public function reconnectWithVoucher(Request $request)

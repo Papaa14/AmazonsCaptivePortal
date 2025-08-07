@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use App\Helpers\CustomHelper;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 // use Masbug\Flysystem\GoogleDriveAdapter\GoogleDriveAdapter;
 // use Google\Client;
@@ -72,7 +73,7 @@ class AppServiceProvider extends ServiceProvider
       }
     } catch (\Exception $e) {
       // Don't let this break application boot
-      \Log::warning('Failed to preload payment settings', [
+      Log::warning('Failed to preload payment settings', [
         'exception' => get_class($e),
         'message' => $e->getMessage()
       ]);
